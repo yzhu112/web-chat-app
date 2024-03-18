@@ -31,7 +31,9 @@ TBD
 ## References
 1. [Design A Chat System](https://bytebytego.com/courses/system-design-interview/design-a-chat-system)
 2. [How to build your own real-time chat app](https://www.freecodecamp.org/news/building-a-chat-application-with-mean-stack-637254d1136d/)
+3. [How JWT (JSON Web Token) authentication works?](https://dev.to/kcdchennai/how-jwt-json-web-token-authentication-works-21e7)
+4. [How to Secure Your MERN Stack App with JWT-Based User Authentication and Authorization](https://www.freecodecamp.org/news/how-to-secure-your-mern-stack-application/)
 
-### Some stuff to learn
+### Some stuff to learn about
 * [Socket.io Introduction - How to Build a Chat App](https://www.youtube.com/watch?v=SGQM7PU9hzI)
 * [Learn Socket.io In 30 Minutes](https://www.youtube.com/watch?v=ZKEqqIO7n-k)
