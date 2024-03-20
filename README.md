@@ -20,7 +20,7 @@ A chat app designed for private conversations with end-to-end encryption.
 ### Diagram
 (subject to change and revision)
 
-![Chat App Architecture](https://github.com/yzhu112/web-chat-app/assets/76628827/fa6c1ad9-f9a2-4741-86f1-51f5303e2675)
+![Chat-App-Architecture_v2](https://github.com/yzhu112/web-chat-app/assets/76628827/1632e8c7-1c18-4176-9383-1baf8a23501b)
 
 ### Client (React.js)
 * Main page (authentication)
