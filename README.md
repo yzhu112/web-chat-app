@@ -3,6 +3,11 @@ A chat app designed for private conversations with end-to-end encryption.
 
 ## Table of contents
   - [Architecture](#architecture)
+    - [Diagram](#diagram)
+    - [Client (React.js)](#client-reactjs)
+    - [Server](#server)
+      - [API Endpoints](#api-endpoints)
+      - [DB Schema](#db-schema)
   - [Features](#features)
   - [Timeline](#timeline)
   - [Notes](#notes)
@@ -10,65 +15,106 @@ A chat app designed for private conversations with end-to-end encryption.
   - [References](#references)
     - [Some stuff to learn about](#some-stuff-to-learn-about)
 
+
 ## Architecture
-1. Client (React.js)
-    * Main page (authentication)
-    * Friends list page (after successfully logging in)
-        - Friends list
-        - Chat window
-2. Server
-    * Endpoints
-        - Authentication endpoint for login
-        - Authentication endpoint for signup
-        - Find user by ID
-        - Add the user with a given ID as a friend
-        - Acknowledge a friend invitation received
-        - Get friends list
-        - Post to the queue of messages of a friend
-    * DB Schema:
-        * User Collection
+### Diagram
+(subject to change and revision)
 
-        | Field              | Type         | Notes                                   |
-        | ------------------ | ------------ | --------------------------------------- |
-        | _id                | ObjectId     | (primary key)                           |
-        | username           | String       | user's username                         |
-        | email              | String       | user's email                            |
-        | password           | String       | user's password stored as a hash        |
-        | registration_date  | Date/ISODate | user's registration date as a timestamp |
+![Chat App Architecture](https://github.com/yzhu112/web-chat-app/assets/76628827/fa6c1ad9-f9a2-4741-86f1-51f5303e2675)
 
-        * Chat Collection
+### Client (React.js)
+* Main page (authentication)
+* Friends list page (after successfully logging in)
+    - Friends list
+    - Chat window
 
-        | Field              | Type              | Notes                                    |
-        | ------------------ | ----------------- | ---------------------------------------- |
-        | _id                | ObjectId          | (primary key)                            |
-        | chat_name          | String            | name of group chat or null for 1:1 chats |
-        | created_by_user_id | ObjectId          | an _id from the User collection          |
-        | created_at         | Date/ISODate      | chat creation timestamp                  |
-        | members            | Array of ObjectId | array of _id s from the User collection  |
+### Server
+#### API Endpoints
 
-        * Message Collection
-        
-        | Field              | Type         | Notes                                    |
-        | ------------------ | ------------ | ---------------------------------------- |
-        | _id                | ObjectId     | (primary key)                            |
-        | chat_id            | ObjectId     | an _id from the Chat collection          |
-        | sender_id          | ObjectId     | an _id from the User collection          |
-        | receiver_id        | ObjectId     | an _id from the User collection          |
-        | msg_content        | String       | content of the msg (utf-8)               |  
-        | timestamp          | Date/ISODate | message timestamp                        |
+* Endpoints
+  - Authentication endpoint for login
+  - Authentication endpoint for signup
+  - Find user by ID
+  - Add the user with a given ID as a friend
+  - Acknowledge a friend invitation received
+  - Get friends list
+  - Post to the queue of messages of a friend
+
+  | Endpoint                    | Method | Description                                  |
+  | :-------------------------- | :----- | :------------------------------------------- |
+  | /api/users/{id}             | GET    | Get user by ID                               |
+  | /api/users/create           | POST   | Create a new user                            |
+  | /api/users/{id}/update      | PUT    | Update user by ID                            |
+  | /api/users/{id}/delete      | DELETE | Delete user by ID                            |
+  | /api/auth/signup            | POST   | Register a new user                          |
+  | /api/auth/login             | POST   | Log in an existing user                      |
+  | /api/auth/logout            | POST   | Log out the current user                     |
+  | /api/auth/reset-password    | POST   | Reset user password                          |
+  | /api/friend-req/send        | POST   | Send a friend request                        |
+  | /api/friend-req/{id}/accept | PUT    | Accept a friend request by friend request ID |
+  | /api/users/{id}/friends     | GET    | Get list of friends for a user by ID         |
+  | /api/chats/{id}             | GET    | Get chats by user ID                         |
+  | /api/messages/{id}          | GET    | Get messages by chat ID                      |
+  | /api/chats/{id}/send        | POST   | Get list of friends for a user by ID         |
+  | /api/users/{id}/status      | PUT    | Update the status of a user by ID            |
+  | /api/users/{id}/status      | GET    | Get the current status of a user by ID       |
+
+  (How do api calls work with websockets?)
+
+#### DB Schema
+<details>
+<summary>User Collection</summary>
+
+| Field              | Type         | Notes                                   |
+| :----------------- | :----------- | :-------------------------------------- |
+| _id                | ObjectId     | (primary key)                           |
+| username           | String       | user's username                         |
+| email              | String       | user's email                            |
+| password           | String       | user's password stored as a hash        |
+| registration_date  | Date/ISODate | user's registration date as a timestamp |
+
+</details>
+
+<details>
+<summary>Chat Collection</summary>
+
+| Field              | Type              | Notes                                    |
+| :----------------- | :---------------- | :--------------------------------------- |
+| _id                | ObjectId          | (primary key)                            |
+| chat_name          | String            | name of group chat or null for 1:1 chats |
+| created_by_user_id | ObjectId          | an _id from the User collection          |
+| created_at         | Date/ISODate      | chat creation timestamp                  |
+| members            | Array of ObjectId | array of _id s from the User collection  |
+
+</details>
+
+<details>
+<summary>Message Collection</summary>
+
+| Field              | Type         | Notes                                    |
+| :----------------- | :----------- | :--------------------------------------- |
+| _id                | ObjectId     | (primary key)                            |
+| chat_id            | ObjectId     | an _id from the Chat collection          |
+| sender_id          | ObjectId     | an _id from the User collection          |
+| receiver_id        | ObjectId     | an _id from the User collection          |
+| msg_content        | String       | content of the msg (utf-8)               |  
+| timestamp          | Date/ISODate | message timestamp                        |
+
+</details>
+
 
 ## Features
 1. End-to-end encryption
 2. Authentication (bcrypt, JWT)
 3. Friends look up and connect
 4. Real-time communication (Socket.io)
-5. New and past message storage (MongoDB? Is NoSQL really a better choice than RDBMS? *)
-6. Data retention period (forever?)
-7. Export/backup data (msgs and contacts)
-8. Supports 1:1 chats and group chats with a max size of <?>
-9. Search for messages and media in chat history
-10. Just for fun/low priority/completely optional: 
-    * Disguise the chat app as a simple game (sudoku, tictactoe, flappy bird, etc.) -> turn on/off stealth mode
+5. New and past message storage (MongoDB? Is NoSQL really a better choice than RDBMS?)
+6. Custom data retention period (lifetime/a year/a month)
+7. Data export and backup for messages and contacts
+8. 1:1 chats and group chats with a max size of <?>
+9. Message and media search in chat history
+10. User presence status: online or offline 
+11. Optional: Game disguise with a toggleable stealth mode to hide the chat interface
 
 ## Timeline
 TBD
